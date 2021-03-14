@@ -1,0 +1,26 @@
+# This AWS CodeBuild job is used to create docker
+version: 0.2
+
+phases:
+  pre_build:
+    commands:
+      - echo Logging in to Amazon ECR...
+      - aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 566283433843.dkr.ecr.us-east-1.amazonaws.com
+
+  build:
+    commands:
+      - echo Build started on `date`
+      - echo Building the Docker image to api...
+      - echo $REPOSITORY_URI
+      - docker build -f ./Dockerfile. prod -t $REPOSITORY_URI:latest .
+      - docker tag $REPOSITORY_URI:latest {{cookiecutter.project_slug}}
+
+  post_build:
+    commands:
+      - echo Build completed on `date`
+      - echo Pushing the Docker images...
+      - echo $REPOSITORY_URI:latest
+      - docker push $REPOSITORY_URI:latest
+      - printf '[{"name":"{{cookiecutter.project_slug}}","imageUri":"%s"}]' $REPOSITORY_URI:latest > imagedefinitions.json
+artifacts:
+  files: imagedefinitions.json

@@ -1,0 +1,5 @@
+-r ./base.txt
+
+#gunicorn
+gunicorn==20.0.4
+gevent==20.9.0

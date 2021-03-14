@@ -1,0 +1,16 @@
+Django==3.1.6
+#postgrest
+psycopg2-binary==2.8.6
+#rest framework
+django-filter==2.4.0
+Markdown==3.3.3
+djangorestframework==3.12.2
+django-cors-headers==3.7.0
+djangorestframework-simplejwt==4.6.0
+#requests
+requests==2.25.1
+python-dotenv==0.15.0
+#boto3
+boto3==1.17.2
+#pandas
+pandas==1.2.2

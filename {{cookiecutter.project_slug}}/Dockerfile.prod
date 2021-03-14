@@ -1,0 +1,49 @@
+# builder
+FROM nikolaik/python-nodejs:python3.9-nodejs14 as builder
+
+ENV PYTHONUNBUFFERED 1
+ENV PYTHONDONTWRITEBYTECODE 1
+
+ENV APP_HOME=/web
+ENV FRONTEND=/web/frontend
+RUN mkdir $APP_HOME
+WORKDIR $APP_HOME
+
+#install requirements
+COPY ./requirements $APP_HOME/requirements
+RUN pip install -r /$APP_HOME/requirements/production.txt
+
+COPY . $APP_HOME
+WORKDIR $FRONTEND
+RUN npm install
+RUN npm run build
+WORKDIR $APP_HOME
+RUN rm -r /web/frontend/node_modules
+RUN rm -r /web/frontend/src
+RUN mv .env.prod .env
+RUN python3 manage.py collectstatic
+
+# final
+
+FROM python:3.9-buster
+
+RUN apt-get update
+RUN apt-get install -y --no-install-recommends apt-utils
+RUN apt-get install supervisor -y wget nginx curl
+
+ENV PYTHONUNBUFFERED 1
+ENV PYTHONDONTWRITEBYTECODE 1
+
+COPY --from=builder /web /web
+RUN pip install -r /web/requirements/production.txt
+
+# Supervisor confs
+RUN mkdir /var/log/web
+RUN chmod +x /web/compose/prod/gunicorn_start.bash
+RUN cp /web/compose/prod/supervisord.conf /etc/supervisord.conf
+RUN cp /web/compose/prod/{{cookiecutter.project_slug}}.com.mx /etc/nginx/sites-available/default
+RUN cp /web/compose/prod/nginx.conf /etc/nginx/nginx.conf
+
+EXPOSE 80
+
+CMD [ "supervisord" ]

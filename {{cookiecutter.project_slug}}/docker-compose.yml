@@ -1,0 +1,26 @@
+# @format
+
+version: '3'
+
+services:
+    db:
+        image: postgres
+        environment:
+            - POSTGRES_DB=postgres
+            - POSTGRES_USER=postgres
+            - POSTGRES_PASSWORD=postgres
+        ports:
+            - '6432:5432'
+    web:
+        build: .
+        command: python manage.py runserver 0.0.0.0:8000
+        stdin_open: true
+        tty: true
+        volumes:
+            - .:/code
+        ports:
+            - '8000:8000'
+        env_file:
+            - ./.env.dev
+        depends_on:
+            - db

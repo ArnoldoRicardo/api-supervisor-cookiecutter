@@ -1,0 +1,12 @@
+{
+  "author_name": "Arnoldo Ricardo",
+  "author_email": "hola@arnoldoricardo.com",
+  "github_username": "arnoldoRicardo",
+  "project_name": "catChow",
+  "project_slug": "{{ cookiecutter.project_name.lower().replace(' ', '_').replace('-', '_') }}",
+  "project_short_description": "Django rest framework, postgrest, celery, redis.",
+  "version": "0.1.0",
+  "command_line_interface": ["Click", "Argparse", "No command-line interface"],
+  "create_author_file": "y",
+  "open_source_license": ["MIT license", "BSD license", "ISC license", "Apache Software License 2.0", "GNU General Public License v3", "Not open source"]
+}
